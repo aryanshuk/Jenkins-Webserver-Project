@@ -1,0 +1,30 @@
+- hosts: web_instance
+  vars_files:
+  - vars.yml
+  tasks:
+  - name: "Webserver software install: {{ pkg }}"
+    package: 
+        name: "{{ pkg }}"
+        state: present
+    register: pkg_install
+
+  - name: "Webserver Software {{ pkg }} Installation Status"
+    debug:
+        var: pkg_install
+
+  - name: "Copy HTML files"
+    template: 
+        dest: "{{ doc_root }}/index.html"
+        src: "{{ webpage }}"
+
+  - name: "Start the service: httpd"
+    service: 
+         name: "{{web_service_name}}"
+         state: started 
+         enabled: yes
+    when: pkg_install.rc == 0
+
+  - name: "Check that you can connect (GET) to a page and it returns a status 200"
+    uri:
+            url: "http://{{ip_address}}:{{web_port}}"
+    register: web_status

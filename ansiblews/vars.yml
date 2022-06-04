@@ -1,0 +1,5 @@
+pkg: "httpd"
+doc_root: "/var/www/html/"
+webpage: "./webpages/index.html"
+web_service_name: "httpd"
+ip_address: 192.168.246.134
